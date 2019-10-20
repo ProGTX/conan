@@ -42,7 +42,7 @@ class NdiffConan(ConanFile):
     def package(self):
         source_folder = "ndiff-2.00"
         self.copy("ndiff", dst="bin", src=source_folder)
-        self.copy("*.h", dst="include", src=source_folder)
+        self.copy("ndiff.h", dst="include", src=source_folder)
 
     def package_info(self):
         self.cpp_info.libs = ["hello"]
