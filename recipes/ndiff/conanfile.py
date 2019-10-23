@@ -36,6 +36,8 @@ class NdiffConan(ConanFile):
         with tools.chdir("ndiff-2.00"):
             package_dir = "package"
             if self.should_configure:
+                # DESTDIR doesn't seem to work,
+                # need to specify full path
                 self.run("./configure --prefix={}".format(
                     os.path.abspath(package_dir)))
             if self.should_build:

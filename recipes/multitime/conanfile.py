@@ -36,7 +36,7 @@ class MultitimeConan(ConanFile):
             if self.should_configure:
                 self.run("autoconf")
                 self.run("autoheader")
-                self.run("./configure --prefix=/")
+                self.run("./configure")
             if self.should_build:
                 self.run("make all -j {}".format(multiprocessing.cpu_count()))
 
@@ -45,5 +45,5 @@ class MultitimeConan(ConanFile):
         package_dir = "package"
         with tools.chdir(source_folder):
             self.run("make install DESTDIR={}".format(package_dir))
-        package_dir = os.path.join(source_folder, package_dir)
+        package_dir = os.path.join(source_folder, package_dir, "usr", "local")
         self.copy("*", src=package_dir)
