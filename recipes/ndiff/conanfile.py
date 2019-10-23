@@ -1,6 +1,8 @@
 from conans import ConanFile, CMake, tools
 
 import multiprocessing
+import os
+import shutil
 
 
 class NdiffConan(ConanFile):
@@ -27,22 +29,29 @@ class NdiffConan(ConanFile):
         source_folder = "ndiff-2.00"
         filename = source_folder + ".tar.gz"
         tools.ftp_download("ftp.math.utah.edu", "/pub/misc/" + filename)
+        shutil.rmtree(source_folder, ignore_errors=True)
         tools.untargz(filename)
 
     def build(self):
         with tools.chdir("ndiff-2.00"):
+            package_dir = "package"
             if self.should_configure:
-                self.run("./configure")
+                self.run("./configure --prefix={}".format(
+                    os.path.abspath(package_dir)))
             if self.should_build:
-                # Only 3 source files
-                self.run("make all -j 3")
+                self.run("make all -j {}".format(multiprocessing.cpu_count()))
             if self.should_test:
                 self.run("make check")
 
     def package(self):
         source_folder = "ndiff-2.00"
-        self.copy("ndiff", dst="bin", src=source_folder)
-        self.copy("ndiff.h", dst="include", src=source_folder)
+        package_dir = os.path.join(source_folder, "package")
+        # The install command doesn't create these two folders
+        os.makedirs(os.path.join(package_dir, "bin"), exist_ok=True)
+        os.makedirs(os.path.join(package_dir, "man", "man1"), exist_ok=True)
+        with tools.chdir(source_folder):
+            self.run("make install")
+        self.copy("*", src=package_dir)
 
     def package_info(self):
         self.cpp_info.libs = ["hello"]
