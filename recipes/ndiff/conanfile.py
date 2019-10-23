@@ -21,8 +21,8 @@ class NdiffConan(ConanFile):
         "build_type",
         "arch",
     )
-    options = {"shared": [True, False]}
-    default_options = "shared=False"
+    options = {}
+    default_options = {}
     generators = "make"
 
     def source(self):
@@ -52,6 +52,3 @@ class NdiffConan(ConanFile):
         with tools.chdir(source_folder):
             self.run("make install")
         self.copy("*", src=package_dir)
-
-    def package_info(self):
-        self.cpp_info.libs = ["hello"]
