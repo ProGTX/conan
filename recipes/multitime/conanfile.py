@@ -47,3 +47,6 @@ class MultitimeConan(ConanFile):
             self.run("make install DESTDIR={}".format(package_dir))
         package_dir = os.path.join(source_folder, package_dir, "usr", "local")
         self.copy("*", src=package_dir)
+
+    def package_info(self):
+        self.env_info.PATH.append(os.path.join(self.package_folder, "bin"))

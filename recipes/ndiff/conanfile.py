@@ -54,3 +54,6 @@ class NdiffConan(ConanFile):
         with tools.chdir(source_folder):
             self.run("make install")
         self.copy("*", src=package_dir)
+
+    def package_info(self):
+        self.env_info.PATH.append(os.path.join(self.package_folder, "bin"))
